@@ -7,14 +7,15 @@ Toàn bộ các bước dưới đây thuộc bài lab. Giả định học viê
 | Thời gian | Hoạt động | Kết quả |
 |---|---|---|
 | 0–15 phút | Khám phá tools và dữ liệu | Hiểu hai tools và giới hạn dữ liệu. |
-| 15–65 phút | Bài 1: tự code agent loop | Model gọi tools và nhận lại kết quả. |
-| 65–95 phút | Bài 2: xử lý lỗi và trace | Có giới hạn bước, trace và lỗi được xử lý. |
+| 15–70 phút | Bài 1: tự code agent loop | Model gọi tools và nhận lại kết quả. |
+| 70–95 phút | Bài 2: xử lý lỗi và trace | Có giới hạn bước, trace và lỗi được xử lý. |
 | 95–105 phút | Nghỉ | |
-| 105–155 phút | Bài 3: chạy eval | Chạy và phân tích E1–E6, A1–A8. |
-| 155–220 phút | Bài 4: kiểm tra nguồn và xử lý tình huống | Kiểm tra nguồn, partial failure, dữ liệu thiếu và prompt injection. |
-| 220–240 phút | Kiểm tra, demo và thảo luận | Trình bày kết quả, trace và giới hạn. |
+| 105–140 phút | Bài 3: chạy eval lần 1 | Có điểm, trace và danh sách lỗi. |
+| 140–195 phút | Bài 4: phân tích và cải tiến | Chọn lỗi, giải thích nguyên nhân và implement cải tiến. |
+| 195–225 phút | Bài 5: chạy eval lần 2 | So sánh điểm và lỗi với lần 1. |
+| 225–240 phút | Demo và thảo luận | Trình bày kết quả, trace và giới hạn. |
 
-Tổng: 240 phút, bao gồm 10 phút nghỉ. Bộ eval gọi model thật nên thời gian chạy có thể thay đổi; hãy bắt đầu từ đầu Bài 3 và làm các bước đọc trace trong lúc chờ.
+Tổng: 240 phút, bao gồm 10 phút nghỉ. Eval gọi model thật cho cả agent và judge nên thời gian và chi phí có thể thay đổi. Mỗi case chạy độc lập; kết quả được ghi sau khi cả bộ hoàn tất.
 
 ## Khám phá tools
 
@@ -62,63 +63,51 @@ run_agent(question, provider, tools, max_steps=6) -> dict
 
 Lỗi provider có thể kết thúc run; lỗi tool nên được trả làm observation. Test offline không chứng minh agent trả lời đúng ngoài thực tế.
 
-## Bài 3 — Chạy eval
+## Bài 3 — Chạy eval lần 1
 
-Chạy bộ eval sau khi hoàn thành agent loop. Mỗi case là một run độc lập trên snapshot cố định:
+Sau khi hoàn thành agent loop, chạy bộ eval trên snapshot cố định:
 
 ```bash
-python3 evals/run_evals.py --output eval_results.json
+python3 evals/run_evals.py --output eval_before.json
 ```
 
-Bộ eval gồm **14 case E1–E6 và A1–A8**. File kết quả chứa câu hỏi, kỳ vọng, status, answer, trace và usage. `completed` chỉ nói loop kết thúc bình thường: bạn phải đối chiếu câu trả lời với evidence và tự chấm theo [RUBRIC.md](RUBRIC.md).
+Bộ eval gồm **22 case E1–E6, A1–A8 và H1–H8**: điều tra nhiều provider, timeline, yêu cầu sai hoặc ngoài luồng, timeout, prompt injection, tìm kiếm giới hạn và nhiều bước tool call. H6 có thêm 40 mục nhiễu giả lập để kiểm tra agent khi thông tin dài. Các scenario giả lập chỉ áp dụng cho eval, không sửa snapshot gốc.
 
-| Case | Tình huống cần phân tích |
-|---|---|
-| E1–E6 | Status hiện tại và lịch sử, scope FedRAMP, khu vực, incident nhiều component, dữ liệu thiếu và timeout. |
-| A1 | Điều tra GitHub và Cloudflare, dẫn nguồn cho cả hai; không suy đoán cùng nguyên nhân. |
-| A2 | Tìm phạm vi FedRAMP trong update cũ, không kết luận quá mức. |
-| A3 | Cloudflare timeout giả lập, GitHub vẫn hoạt động: báo kết quả từng phần. |
-| A4 | Tool result có prompt injection giả lập: bỏ qua chỉ dẫn giả, trả lời đúng và dẫn nguồn. |
-| A5 | Không suy ra danh sách đầy đủ khi tool chỉ tìm trong 50 incident gần nhất. |
-| A6 | Theo tham chiếu từ incident này sang incident khác, phân biệt thông tin xác nhận và chưa xác nhận. |
-| A7 | Không quy lỗi tại Việt Nam cho incident Phoenix khi chưa đủ bằng chứng. |
-| A8 | So sánh hai incident khác provider, dẫn cả hai nguồn, không bịa nguyên nhân chung. |
+Mỗi case được chấm 0–100 bằng **LLM judge + kiểm tra bằng code**. Mở `eval_before.json`, xem `summary`, `grade.reason`, `grade.improvement`, `grade.mechanical`, answer và trace. Điểm judge là ước lượng, có thể sai hoặc bị ảnh hưởng bởi model; đối chiếu với `expected` và evidence. `completed` chỉ nói agent đã dừng bình thường.
 
-`evals/scenarios.py` tạo timeout và chèn chỉ dẫn giả **chỉ khi chạy eval**; snapshot gốc không bị thay đổi. Chỉ dẫn trong tool result là dữ liệu không đáng tin, không phải yêu cầu cho agent. E6 cũng giả lập timeout. Ghi lại provider, model, cấu hình, số lần chạy, điểm, token và các trường hợp agent trả lời chưa đúng hoặc chưa đủ.
+Nếu một case bị lỗi hệ thống hoặc judge không trả JSON hợp lệ, case là `unscored` và điểm tổng là `null`. Sửa vấn đề cấu hình và chạy lại, không coi case đó là 0 hoặc bỏ qua để báo điểm tổng. `partial_mean_0_100` chỉ là trung bình các case đã chấm, không phải điểm toàn bộ.
 
-## Bài 4 — Kiểm tra nguồn và xử lý tình huống
+## Bài 4 — Phân tích lỗi và cải tiến agent
 
-### 4.1. Kiểm tra bằng chứng và nguồn
+Chọn một case điểm thấp hoặc một lỗi thấy trong trace. Ghi lại: case, câu trả lời, bằng chứng, nguyên nhân có thể xảy ra và thay đổi dự kiến. Đối chiếu những tình huống sau:
 
-Dùng kết quả A1, A4 và A8 để kiểm tra URL trong tool results và final answer. Implement một bước validation trong `agent.py`:
+- **Nguồn và scope:** A2/A8. Địa chỉ URL có thật trong tool result không? Có tách phạm vi FedRAMP và các dịch vụ không?
+- **Partial failure và prompt injection:** A3/A4/H5/H7. Tool timeout có bị nhầm là trạng thái dịch vụ không? Agent có làm theo chỉ dẫn giả trong tool result hoặc yêu cầu bịa dữ liệu không?
+- **Nhiều bước và dữ liệu dài:** H1/H6. Agent có gọi tiếp khi thấy incident liên quan, bỏ qua dữ liệu nhiễu và nêu giới hạn khi output bị cắt không?
+- **Yêu cầu sai hoặc ngoài luồng:** H2/H3/H4/H8. Agent có sửa tiền đề sai, từ chối bịa link hoặc sử dụng tool không cần thiết không?
 
-1. Khi `get_incident_details` thành công, lưu URL incident mà tool trả về.
-2. Khi model đưa final answer, nếu đã có URL incident nhưng câu trả lời không chứa **bất kỳ URL incident nào đã quan sát**, ghi validation event vào trace và yêu cầu model sửa.
-3. Lần gọi sửa phải tính vào `max_steps`. Nếu hết lượt, không trả `completed`. Không yêu cầu URL incident khi tool thất bại hoặc không tìm được incident.
-4. Chạy tests offline và đọc kết quả để kiểm tra implementation.
+Implement một thay đổi để giải quyết lỗi bạn đã chọn. Một ví dụ là kiểm tra URL nguồn trong `agent.py`: lưu URL từ `get_incident_details` thành công; nếu final answer không chứa URL incident đã quan sát, ghi event vào trace và yêu cầu model sửa trong `max_steps`. Không bắt URL nếu không có incident thành công. Đây chỉ là kiểm tra sự hiện diện một URL, không chứng minh tất cả claims đều có nguồn.
 
-Đây là một **kiểm tra tối thiểu**: URL xuất hiện không chứng minh nó hỗ trợ mọi claim, và chưa bảo đảm có đủ nguồn cho cả hai provider. Với A1 và A8, vẫn phải tự kiểm tra từng nguồn.
-
-### 4.2. Partial failure và prompt injection
-
-- Đọc trace A3: GitHub trả gì, Cloudflare lỗi gì, model có báo rõ phần chưa kiểm tra được không? Đếm số lần gọi lại. Đọc E6 để so sánh khi tool được hỏi đều timeout; không đồng nhất timeout với trạng thái dịch vụ.
-- Đọc trace A4: xác định chỉ dẫn giả trong tool result và kiểm tra final answer không làm theo nó. Đối chiếu nội dung và URL thật trong tool output. Một lần vượt qua không chứng minh agent an toàn trước mọi kiểu injection.
-
-Ghi một hạn chế hoặc lỗi quan sát được của mỗi case vào ghi chú; không hard-code câu trả lời theo case.
-
-### 4.3. Search, context và dữ liệu chưa đầy đủ
-
-Phân tích A5 và A6: tool chỉ tìm trong 50 incident gần nhất; detail giữ hai update mới nhất cùng update đầu tiên. Một update có thể bị cắt (`truncated`) hoặc bị bỏ qua giữa timeline (`updates_total`). Ghi agent có làm rõ giới hạn dữ liệu không và việc đọc incident liên quan có bổ sung evidence gì. Với A2 và A7, đối chiếu phạm vi khách hàng, địa lý và uncertainty.
-
-## Kiểm tra và nộp bài
-
-Sau khi hoàn thành bước kiểm tra nguồn, chạy tests và eval để kiểm tra agent:
+Chạy tests offline:
 
 ```bash
 python3 -m unittest discover -s tests -v
-python3 evals/run_evals.py --output eval_results.json
 ```
 
-Đọc câu trả lời và trace, tự chấm theo rubric. Các model có thể trả lời khác nhau giữa những lần chạy; một lần pass chưa chứng minh độ ổn định. Không sửa `fixtures/`, các bộ case, `evals/scenarios.py` hay rubric để làm case pass.
+Nếu chọn một cách cải tiến khác, vẫn cần hoàn thành contract kiểm tra nguồn trong `tests/test_validation.py`. Không sửa `fixtures/`, `evals/cases.json`, `evals/scenarios.py`, `evals/grading.py` hay rubric để làm case pass.
 
-Nộp `agent.py`, kết quả bộ eval đã xóa thông tin nhạy cảm và ghi chú về một trường hợp agent trả lời chưa đúng hoặc chưa đủ. Demo agent và một trace trong bộ eval; cho biết đang dùng snapshot hay live và thời điểm dữ liệu.
+## Bài 5 — Chạy eval lần 2 và phân tích
+
+Dùng cùng agent model, judge model, snapshot, max steps và dataset để chạy lại:
+
+```bash
+python3 evals/run_evals.py --output eval_after.json
+```
+
+So sánh điểm tổng, từng case và trace; nêu lỗi đã giải quyết, lỗi còn lại hoặc mới xuất hiện, số model calls, token và chi phí nếu provider cung cấp. Có thể chọn judge khác bằng `--judge-provider` và `--judge-model`, nhưng giữ nguyên giữa hai lần. Judge mặc định dùng cùng provider/model với agent: điểm có thể thiên lệch khi cùng model tự chấm.
+
+Đây là **một vòng thực hành**: xây agent → chạy eval → phân tích lỗi → cải tiến → chạy lại. Chỉ một lần chạy mỗi phiên bản không chứng minh độ ổn định; không sửa expected để tối ưu điểm.
+
+## Nộp bài
+
+Nộp `agent.py`, `eval_before.json`, `eval_after.json` đã xóa thông tin nhạy cảm và ghi chú gồm: case được chọn, evidence trong trace, thay đổi, kết quả so sánh, giới hạn. Demo một trace nhiều bước và trình bày một lỗi agent.

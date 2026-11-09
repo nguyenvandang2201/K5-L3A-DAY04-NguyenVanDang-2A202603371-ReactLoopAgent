@@ -44,7 +44,9 @@ class Provider:
     def complete(self, messages, schemas):
         if self.name == 'removed-provider':
             return self._removed-provider(messages, schemas)
-        payload = {'model': self.model, 'messages': messages, 'tools': schemas}
+        payload = {'model': self.model, 'messages': messages}
+        if schemas:
+            payload['tools'] = schemas
         data = post_json(self.url, {'Authorization': f'Bearer {self.key}'}, payload)
         choice = data['choices'][0]
         message = choice['message']
@@ -73,7 +75,10 @@ class Provider:
             else:
                 native.append({'role': 'user', 'content': m['content']})
         tools = [{'name': x['function']['name'], 'description': x['function']['description'], 'input_schema': x['function']['parameters']} for x in schemas]
-        data = post_json(self.url, {'x-api-key': self.key, 'removed-provider-version': '2023-06-01'}, {'model': self.model, 'max_tokens': 1024, 'system': system, 'messages': native, 'tools': tools})
+        payload = {'model': self.model, 'max_tokens': 1024, 'system': system, 'messages': native}
+        if tools:
+            payload['tools'] = tools
+        data = post_json(self.url, {'x-api-key': self.key, 'removed-provider-version': '2023-06-01'}, payload)
         blocks = data['content']
         calls = [{'id': b['id'], 'name': b['name'], 'arguments': json.dumps(b['input'], ensure_ascii=False)} for b in blocks if b['type'] == 'tool_use']
         text = '\n'.join(b['text'] for b in blocks if b['type'] == 'text')

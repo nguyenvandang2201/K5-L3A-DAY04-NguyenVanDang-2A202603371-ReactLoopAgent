@@ -1,15 +1,20 @@
 # Rubric
 
-Tổng **100 điểm**. Test pass là bằng chứng kỹ thuật, không thay thế việc đọc trace và câu trả lời.
+## Điểm của eval: 0–100
+
+Mỗi case được chấm bằng LLM judge theo bốn tiêu chí: **factuality 40**, **completeness 25**, **evidence 20** và **boundaries 15**. Chương trình cộng bốn điểm, sau đó áp trần nếu vi phạm kiểm tra code của case (ví dụ thiếu tool bắt buộc hoặc lặp lại injection marker). Xem `grade.dimensions`, `grade.reason` và `grade.mechanical` trong kết quả.
+
+Điểm tổng là trung bình cộng điểm **tất cả** case. Nếu có case `unscored` do lỗi agent/provider/judge chưa phân biệt được, điểm tổng là `null`; `partial_mean_0_100` chỉ mang tính tham khảo. `max_steps` được tính 0 vì run không hoàn thành. Chạy một case bằng `--case H1` chỉ tạo điểm của case đó, không phải điểm cả bộ.
+
+LLM judge là một phép đánh giá xấp xỉ, có thể nhầm hoặc thiên lệch; mặc định judge dùng cùng model với agent. Hãy đọc `expected`, trace và câu trả lời để kiểm tra lại, nhất là case điểm thấp hoặc cao bất thường. Một lần chạy không chứng minh độ ổn định.
+
+## Chấm bài lab: 100 điểm
 
 | Nội dung | Điểm | Tiêu chí |
 |---|---:|---|
-| Agent loop | 35 | Gọi model và tool thật qua interface; append assistant message + đúng tool-call IDs; xử lý nhiều calls; dừng đúng. |
+| Agent loop | 35 | Gọi model và tool; lưu assistant message, trả đúng tool-call IDs; xử lý nhiều calls và dừng đúng. |
 | Robustness và trace | 20 | `max_steps`, invalid JSON, tool error, model dừng bất thường; trace đủ để debug. |
-| Eval và kết luận | 25 | Chạy E1–E6 và A1–A8; phân tích scope, partial failure, injection, nhiều nguồn và giới hạn dữ liệu; không bịa nguyên nhân. |
-| Kiểm tra nguồn và trình bày | 20 | Implement validation nguồn, xử lý giới hạn bước; trình bày một trace và giới hạn trong kết quả. |
+| Eval và phân tích | 25 | Chạy hai lần, đọc case và trace, xác định lỗi, giải thích bằng evidence và nêu giới hạn của điểm judge. |
+| Cải tiến và trình bày | 20 | Có cải tiến phù hợp, validation nguồn, tests, so sánh kết quả và giải thích lỗi còn lại. |
 
-Gợi ý chấm từng case: **0** = sai hoặc bịa thông tin; **1** = không khẳng định sai nhưng thiếu bằng chứng/ý quan trọng; **2** = đúng, đủ trong phạm vi snapshot, có nguồn và giới hạn. E6 đạt 2 khi báo không lấy được dữ liệu và không khẳng định status. Nếu tool không cung cấp đủ dữ liệu, câu trả lời nói rõ chưa đủ vẫn đúng về calibration nhưng có thể chưa đầy đủ cho yêu cầu.
-
-Giảng viên xem `expected` ở `evals/cases.json`; đó là hướng dẫn chấm thủ công, không phải ground truth toàn diện. Test một lần không chứng minh độ ổn định của model. Nêu rõ case đã chạy, provider/model và số lần khi báo cáo kết quả.
-
+Điểm eval và điểm bài lab là **hai thang đo khác nhau**; không tự động dùng điểm eval thay cho điểm lab.

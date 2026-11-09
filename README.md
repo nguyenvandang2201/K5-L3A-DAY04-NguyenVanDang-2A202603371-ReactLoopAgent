@@ -8,9 +8,9 @@ Bạn sẽ tự viết một agent loop bằng Python. Agent dùng dữ liệu t
 
 1. Khám phá status tools và tự code agent loop.
 2. Thêm xử lý lỗi, giới hạn bước và trace.
-3. Chạy bộ eval: 14 case E1–E6 và A1–A8.
-4. Phân tích partial failure, prompt injection, nguồn và giới hạn dữ liệu; implement bước kiểm tra nguồn trong agent.
-5. Chạy tests, đánh giá kết quả và trình bày trace của agent.
+3. Chạy bộ eval 22 case và nhận điểm 0–100 cùng giải thích từng case.
+4. Phân tích lỗi trong trace; chọn một thay đổi và cải tiến agent.
+5. Chạy lại cùng bộ eval một lần, so sánh điểm, lỗi và chi phí.
 
 Các bước trên là một lab thống nhất. Timeline, yêu cầu và tiêu chí hoàn thành được mô tả trong [GUIDE.md](GUIDE.md).
 
@@ -51,13 +51,15 @@ python3 run.py 'GitHub Actions hiện có sự cố không? Hãy kiểm tra inci
 python3 run.py --mode live 'Cloudflare có incident liên quan cache purge không?'
 python3 -m unittest discover -s tests -v
 python3 evals/run_evals.py --case E2 --output eval_results_e2.json
-python3 evals/run_evals.py --output eval_results.json
+python3 evals/run_evals.py --output eval_before.json
+# Sau khi phân tích và cải tiến agent:
+python3 evals/run_evals.py --output eval_after.json
 ```
 
 - Mặc định là `snapshot`: đọc dữ liệu được lưu sẵn; vẫn cần LLM API key.
 - `live`: gọi status API thật, dữ liệu thay đổi và cần Internet. Cloudflare khuyến nghị User-Agent có thông tin liên hệ; giảng viên có thể đặt `export STATUS_USER_AGENT="StatusAgentLab/1.0 (contact: email-lop@example.edu)"` bằng thông tin liên hệ thực của lớp.
 - Unit tests dùng fake provider, không cần key. **Ban đầu một số tests thất bại** vì `agent.py` chưa được implement.
-- Eval gọi LLM thật, tiêu tốn token. Bắt đầu với một case; đọc output và tự chấm theo rubric. `manual_score: null` nghĩa là **chưa chấm**, không phải pass.
+- Eval gọi LLM cho agent và LLM judge, tiêu tốn token. Mỗi case có điểm 0–100; điểm tổng là trung bình các case. Nếu có case chưa chấm được, điểm tổng là `null`. Đọc giải thích và trace; điểm judge là ước lượng, cần kiểm tra lại.
 - Có thể override bằng `--provider`, `--model`, `--max-steps`. `--max-steps` là số lần gọi model, mặc định 6.
 
 Snapshot là dữ liệu public được lưu ngày 09/11/2026. Không dùng nó để trả lời tình trạng hiện tại trong thực tế. Khi chạy live, API có thể rate limit, timeout hoặc thay đổi dữ liệu.
@@ -70,9 +72,10 @@ providers.py                # Adapter bốn provider, đã cung cấp
 status_tools.py             # Tools + schema, đã cung cấp
 run.py                      # CLI
 fixtures/                   # Snapshot API, không sửa khi làm eval
-evals/cases.json            # 14 câu hỏi và kỳ vọng
+evals/cases.json            # 22 câu hỏi, kỳ vọng và một số kiểm tra tự động
 evals/scenarios.py          # Timeout và prompt injection giả lập cho eval
-evals/run_evals.py          # Chạy eval, chất lượng câu trả lời chấm thủ công
+evals/grading.py            # Rubric LLM judge và kiểm tra bằng code
+evals/run_evals.py          # Chạy agent, chấm điểm và lưu kết quả
 tests/                      # Tests offline
 ```
 
