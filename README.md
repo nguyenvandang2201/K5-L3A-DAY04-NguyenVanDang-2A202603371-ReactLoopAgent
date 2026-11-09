@@ -8,7 +8,7 @@ Bạn sẽ tự viết một agent loop bằng Python. Agent dùng dữ liệu t
 
 1. Khám phá status tools và tự code agent loop.
 2. Thêm xử lý lỗi, giới hạn bước và trace.
-3. Chạy hai bộ eval: case cơ bản E1–E6 và case nâng cao A1–A8.
+3. Chạy bộ eval: 14 case E1–E6 và A1–A8.
 4. Phân tích partial failure, prompt injection, nguồn và giới hạn dữ liệu; implement bước kiểm tra nguồn trong agent.
 5. Chạy tests, đánh giá kết quả và trình bày trace của agent.
 
@@ -51,8 +51,7 @@ python3 run.py 'GitHub Actions hiện có sự cố không? Hãy kiểm tra inci
 python3 run.py --mode live 'Cloudflare có incident liên quan cache purge không?'
 python3 -m unittest discover -s tests -v
 python3 evals/run_evals.py --case E2 --output eval_results_e2.json
-python3 evals/run_evals.py --output eval_results_basic.json
-python3 evals/run_evals.py --suite advanced --output eval_results_advanced.json
+python3 evals/run_evals.py --output eval_results.json
 ```
 
 - Mặc định là `snapshot`: đọc dữ liệu được lưu sẵn; vẫn cần LLM API key.
@@ -67,14 +66,11 @@ Snapshot là dữ liệu public được lưu ngày 09/11/2026. Không dùng nó
 
 ```text
 agent.py                    # Học viên tự viết agent loop
-pseudocode_agent.py         # Gợi ý cho agent loop
-pseudocode_advanced.py      # Gợi ý kiểm tra nguồn
 providers.py                # Adapter bốn provider, đã cung cấp
 status_tools.py             # Tools + schema, đã cung cấp
 run.py                      # CLI
 fixtures/                   # Snapshot API, không sửa khi làm eval
-evals/cases.json            # E1–E6: eval cơ bản
-evals/advanced_cases.json   # A1–A8: eval nâng cao
+evals/cases.json            # 14 câu hỏi và kỳ vọng
 evals/scenarios.py          # Timeout và prompt injection giả lập cho eval
 evals/run_evals.py          # Chạy eval, chất lượng câu trả lời chấm thủ công
 tests/                      # Tests offline

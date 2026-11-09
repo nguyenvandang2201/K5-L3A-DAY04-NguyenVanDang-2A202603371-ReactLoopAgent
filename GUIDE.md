@@ -11,10 +11,10 @@ Toàn bộ các bước dưới đây thuộc bài lab. Giả định học viê
 | 65–95 phút | Bài 2: xử lý lỗi và trace | Có giới hạn bước, trace và lỗi được xử lý. |
 | 95–105 phút | Nghỉ | |
 | 105–155 phút | Bài 3: chạy eval | Chạy và phân tích E1–E6, A1–A8. |
-| 155–220 phút | Bài 4: thực hành nâng cao | Kiểm tra nguồn, partial failure, dữ liệu thiếu và prompt injection. |
+| 155–220 phút | Bài 4: kiểm tra nguồn và xử lý tình huống | Kiểm tra nguồn, partial failure, dữ liệu thiếu và prompt injection. |
 | 220–240 phút | Kiểm tra, demo và thảo luận | Trình bày kết quả, trace và giới hạn. |
 
-Tổng: 240 phút, bao gồm 10 phút nghỉ. Hai bộ eval gọi model thật nên thời gian chạy có thể thay đổi; hãy bắt đầu từ đầu Bài 3 và làm các bước đọc trace trong lúc chờ.
+Tổng: 240 phút, bao gồm 10 phút nghỉ. Bộ eval gọi model thật nên thời gian chạy có thể thay đổi; hãy bắt đầu từ đầu Bài 3 và làm các bước đọc trace trong lúc chờ.
 
 ## Khám phá tools
 
@@ -33,7 +33,7 @@ python3 -c 'import json; from status_tools import StatusTools; print(json.dumps(
 
 ## Bài 1 — Tự viết agent loop
 
-Hoàn thiện `run_agent` trong `agent.py`. Dùng `pseudocode_agent.py` khi cần. Bạn không cần sửa provider adapter hay tool implementations.
+Hoàn thiện `run_agent` trong `agent.py`. Các bước gợi ý có trong `agent.py`. Bạn không cần sửa provider adapter hay tool implementations.
 
 **Contract:**
 
@@ -64,14 +64,13 @@ Lỗi provider có thể kết thúc run; lỗi tool nên được trả làm ob
 
 ## Bài 3 — Chạy eval
 
-Chạy hai bộ eval sau khi hoàn thành agent loop. Mỗi case là một run độc lập trên snapshot cố định:
+Chạy bộ eval sau khi hoàn thành agent loop. Mỗi case là một run độc lập trên snapshot cố định:
 
 ```bash
-python3 evals/run_evals.py --output eval_results_basic.json
-python3 evals/run_evals.py --suite advanced --output eval_results_advanced.json
+python3 evals/run_evals.py --output eval_results.json
 ```
 
-Bộ cơ bản gồm **E1–E6**; bộ nâng cao gồm **A1–A8**. File kết quả chứa câu hỏi, kỳ vọng, status, answer, trace và usage. `completed` chỉ nói loop kết thúc bình thường: bạn phải đối chiếu câu trả lời với evidence và tự chấm theo [RUBRIC.md](RUBRIC.md).
+Bộ eval gồm **14 case E1–E6 và A1–A8**. File kết quả chứa câu hỏi, kỳ vọng, status, answer, trace và usage. `completed` chỉ nói loop kết thúc bình thường: bạn phải đối chiếu câu trả lời với evidence và tự chấm theo [RUBRIC.md](RUBRIC.md).
 
 | Case | Tình huống cần phân tích |
 |---|---|
@@ -87,7 +86,7 @@ Bộ cơ bản gồm **E1–E6**; bộ nâng cao gồm **A1–A8**. File kết q
 
 `evals/scenarios.py` tạo timeout và chèn chỉ dẫn giả **chỉ khi chạy eval**; snapshot gốc không bị thay đổi. Chỉ dẫn trong tool result là dữ liệu không đáng tin, không phải yêu cầu cho agent. E6 cũng giả lập timeout. Ghi lại provider, model, cấu hình, số lần chạy, điểm, token và các trường hợp agent trả lời chưa đúng hoặc chưa đủ.
 
-## Bài 4 — Thực hành nâng cao
+## Bài 4 — Kiểm tra nguồn và xử lý tình huống
 
 ### 4.1. Kiểm tra bằng chứng và nguồn
 
@@ -96,7 +95,7 @@ Dùng kết quả A1, A4 và A8 để kiểm tra URL trong tool results và fina
 1. Khi `get_incident_details` thành công, lưu URL incident mà tool trả về.
 2. Khi model đưa final answer, nếu đã có URL incident nhưng câu trả lời không chứa **bất kỳ URL incident nào đã quan sát**, ghi validation event vào trace và yêu cầu model sửa.
 3. Lần gọi sửa phải tính vào `max_steps`. Nếu hết lượt, không trả `completed`. Không yêu cầu URL incident khi tool thất bại hoặc không tìm được incident.
-4. Chạy tests offline, xem `pseudocode_advanced.py` nếu cần.
+4. Chạy tests offline và đọc kết quả để kiểm tra implementation.
 
 Đây là một **kiểm tra tối thiểu**: URL xuất hiện không chứng minh nó hỗ trợ mọi claim, và chưa bảo đảm có đủ nguồn cho cả hai provider. Với A1 và A8, vẫn phải tự kiểm tra từng nguồn.
 
@@ -117,10 +116,9 @@ Sau khi hoàn thành bước kiểm tra nguồn, chạy tests và eval để ki�
 
 ```bash
 python3 -m unittest discover -s tests -v
-python3 evals/run_evals.py --output eval_results_basic.json
-python3 evals/run_evals.py --suite advanced --output eval_results_advanced.json
+python3 evals/run_evals.py --output eval_results.json
 ```
 
 Đọc câu trả lời và trace, tự chấm theo rubric. Các model có thể trả lời khác nhau giữa những lần chạy; một lần pass chưa chứng minh độ ổn định. Không sửa `fixtures/`, các bộ case, `evals/scenarios.py` hay rubric để làm case pass.
 
-Nộp `agent.py`, kết quả hai bộ eval đã xóa thông tin nhạy cảm và ghi chú về một trường hợp agent trả lời chưa đúng hoặc chưa đủ. Demo agent và một trace nâng cao; cho biết đang dùng snapshot hay live và thời điểm dữ liệu.
+Nộp `agent.py`, kết quả bộ eval đã xóa thông tin nhạy cảm và ghi chú về một trường hợp agent trả lời chưa đúng hoặc chưa đủ. Demo agent và một trace trong bộ eval; cho biết đang dùng snapshot hay live và thời điểm dữ liệu.

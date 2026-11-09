@@ -14,12 +14,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--provider', choices=['openai', 'gemini', 'removed-provider', 'openrouter'], default=os.getenv('PROVIDER', 'openai'))
     parser.add_argument('--model', default=os.getenv('MODEL'))
-    parser.add_argument('--suite', choices=['basic', 'advanced'], default='basic')
     parser.add_argument('--case', help='Ví dụ E2; bỏ trống để chạy cả bộ')
     parser.add_argument('--output', default='eval_results.json')
     args = parser.parse_args()
-    cases_file = 'advanced_cases.json' if args.suite == 'advanced' else 'cases.json'
-    cases = json.loads((Path(__file__).parent / cases_file).read_text())
+    cases = json.loads((Path(__file__).parent / 'cases.json').read_text())
     selected = [case for case in cases if not args.case or case['id'] == args.case.upper()]
     if not selected:
         parser.error('Không tìm thấy case')
@@ -29,12 +27,12 @@ def main():
     for case in selected:
         print('Đang chạy', case['id'], flush=True)
         try:
-            result = run_agent(case['question'], Provider(args.provider, args.model), ScenarioTools(case.get('scenario', 'normal'), case.get('fail', False)), max_steps=8 if args.suite == 'advanced' else 6)
+            result = run_agent(case['question'], Provider(args.provider, args.model), ScenarioTools(case.get('scenario', 'normal'), case.get('fail', False)), max_steps=8)
         except (ValueError, RuntimeError, NotImplementedError) as exc:
             result = {'status': 'error', 'answer': '', 'trace': [], 'usage': [], 'error': str(exc)}
         if result['status'] != 'completed':
             print(f"  {case['id']}: {result['status']} — {result.get('error', 'chưa hoàn tất')}", file=sys.stderr)
-        results.append({'id': case['id'], 'question': case['question'], 'expected': case['expected'], 'suite': args.suite, 'scenario': case.get('scenario', 'normal'), 'provider': args.provider, 'model': args.model, 'result': result, 'manual_score': None})
+        results.append({'id': case['id'], 'question': case['question'], 'expected': case['expected'], 'scenario': case.get('scenario', 'normal'), 'provider': args.provider, 'model': args.model, 'result': result, 'manual_score': None})
     Path(args.output).write_text(json.dumps(results, ensure_ascii=False, indent=2) + '\n')
     print(f'Đã lưu {args.output}. Chỉ tự chấm case đã hoàn tất theo RUBRIC.md; chất lượng câu trả lời chưa được chấm tự động.')
     return 1 if any(x['result']['status'] != 'completed' for x in results) else 0
