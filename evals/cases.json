@@ -1,0 +1,8 @@
+[
+  {"id":"E1", "question":"GitHub Actions hiện có sự cố không? Hãy xem cả incident gần đây và dẫn nguồn.", "expected":"Tại thời điểm snapshot GitHub overall none; incident Actions 05/11 resolved. Không nói sự cố cũ đang diễn ra.", "fail":false},
+  {"id":"E2", "question":"Cloudflare cache purge có incident nào liên quan không? Một website CLB không thuộc FedRAMP có chắc bị ảnh hưởng không?", "expected":"Incident wp49bp8bqo6c identified; update ban đầu nói non-FedRAMP không bị ảnh hưởng bởi incident này. Không khẳng định nguyên nhân lỗi website.", "fail":false},
+  {"id":"E3", "question":"Cloudflare Spectrum có incident ở đâu? Có đủ căn cứ nói incident đó gây lỗi dịch vụ của nhóm ở Việt Nam không?", "expected":"Incident c60k3g4vsoc1 tại Phoenix đang monitoring theo snapshot. Không đủ căn cứ kết luận gây lỗi nhóm Việt Nam.", "fail":false},
+  {"id":"E4", "question":"Xem incident GitHub xr3myzj7ms51: những component được ghi nhận nào bị ảnh hưởng? Actions có liên quan không?", "expected":"Chi tiết incident liệt kê Webhooks, Actions, Pages; Actions có liên quan. Status resolved.", "fail":false},
+  {"id":"E5", "question":"Tìm incident gần đây về Copilot Mission Control trên GitHub. Nếu trường components rỗng, có thể kết luận không có dịch vụ bị ảnh hưởng không?", "expected":"Tìm bằng title/nội dung; components rỗng không chứng minh không có ảnh hưởng. Nếu không tìm được phải nói giới hạn, không bịa.", "fail":false},
+  {"id":"E6", "question":"GitHub Actions hiện có hoạt động bình thường không?", "expected":"Tools bị timeout giả lập. Phải nói không lấy được dữ liệu, không khẳng định trạng thái hiện tại.", "fail":true}
+]
