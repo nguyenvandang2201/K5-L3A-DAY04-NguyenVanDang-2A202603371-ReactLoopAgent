@@ -77,3 +77,20 @@ tests/                      # Tests offline
 ```
 
 Một câu trả lời tốt phải phân biệt **trạng thái hiện tại theo thời điểm dữ liệu**, incident cũ, phạm vi ảnh hưởng và điều chưa biết. Status page không đủ để xác nhận nguyên nhân lỗi cụ thể của lớp.
+
+## Tài liệu tham khảo: làm việc với coding agent
+
+Các tài liệu dưới đây giúp bạn tham khảo cách tổ chức việc viết code với AI; **không phải task của lab và không cần cài đặt để hoàn thành bài**.
+
+Trong bài lab, *agent loop* là vòng LLM → tool → kết quả. Khi dùng coding agent, một vòng làm việc khác có thể là: mô tả yêu cầu và tiêu chí hoàn thành → agent sửa code → chạy tests/kiểm tra → đọc kết quả và điều chỉnh. “Loop engineering” trong ngữ cảnh này là thiết kế cách cung cấp nhiệm vụ, phản hồi và điều kiện dừng cho quá trình đó.
+
+| Chủ đề | Tài liệu | Bạn sẽ tìm thấy gì? |
+|---|---|---|
+| Instructions | [Codex: AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md) · [removed-model Code: project instructions](https://code.removed-model.com/docs/en/memory) | Cách cung cấp quy ước dự án và lệnh kiểm tra cho coding agent. |
+| Skills | [OpenAI: Build skills](https://learn.chatgpt.com/docs/build-skills) · [removed-model Code: Skills](https://code.removed-model.com/docs/en/skills) | Cách đóng gói một workflow có thể dùng lại, ví dụ review code hoặc debug. |
+| Hooks | [Codex: Hooks](https://learn.chatgpt.com/docs/hooks) · [removed-model Code: Hooks](https://code.removed-model.com/docs/en/hooks) | Cách chạy kiểm tra tại các sự kiện như trước/sau tool call hoặc khi agent kết thúc. |
+| Workflow | [GitHub Spec Kit](https://github.github.com/spec-kit/quickstart) · [Superpowers](https://github.com/obra/superpowers) | Hai ví dụ workflow: đi từ yêu cầu đến kế hoạch, implementation và kiểm chứng. Superpowers là dự án cộng đồng. |
+| Vòng lặp tự động | [Ralph: bài viết gốc](https://ghuntley.com/ralph/) · [removed-model Code Ralph Loop plugin](https://github.com/removed-providers/removed-model-plugins-official/blob/main/plugins/ralph-loop/README.md) | Ví dụ cho agent tiếp tục lặp trên một nhiệm vụ; plugin dùng Stop hook và là một implementation riêng của ý tưởng này. |
+| Thiết kế môi trường | [OpenAI: Harness engineering](https://openai.com/index/harness-engineering/) | Vai trò của tests, feedback và môi trường khi giao công việc cho coding agent. |
+
+Nếu thử workflow tự động, hãy đặt giới hạn lượt chạy hoặc chi phí, có điều kiện dừng và tự kiểm tra kết quả. Tests pass là bằng chứng hữu ích, nhưng vẫn cần xem code và đối chiếu yêu cầu. Đọc kỹ quyền và hướng dẫn của từng công cụ trước khi cài hoặc chạy plugin/hook.
