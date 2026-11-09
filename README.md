@@ -4,6 +4,18 @@ Bạn sẽ tự viết một agent loop bằng Python. Agent dùng dữ liệu t
 
 **Mục tiêu:** gọi LLM → thực thi tool → đưa kết quả trở lại LLM → lặp đến khi trả lời hoặc hết giới hạn. Thời lượng dự kiến: **4 giờ**, gồm nghỉ 10 phút. Toàn bộ các bước trong [GUIDE.md](GUIDE.md) là nội dung của lab. Đọc thêm [RUBRIC.md](RUBRIC.md) để biết tiêu chí đánh giá.
 
+## Agent hoạt động như thế nào?
+
+Agent nhận câu hỏi cùng system prompt và lịch sử hội thoại. LLM đề xuất tool call; Python thực thi tool, đưa kết quả về context rồi gọi LLM tiếp. Quá trình dừng khi có câu trả lời, gặp lỗi hoặc hết giới hạn bước.
+
+<img src="assets/agent-architecture.svg" alt="Sơ đồ agent: user, conversation context, LLM, Python agent loop, hai tools và nguồn dữ liệu status" width="1200">
+
+## Một vòng thực hành
+
+Sau khi xây agent, bạn chạy eval, phân tích kết quả, cải tiến rồi chạy lại cùng bộ eval để so sánh.
+
+<img src="assets/lab-workflow.svg" alt="Quy trình lab: xây agent, chạy eval lần một, phân tích lỗi, cải tiến, chạy eval lần hai" width="1200">
+
 ## Lộ trình học
 
 1. Khám phá status tools và tự code agent loop.
