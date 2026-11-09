@@ -76,23 +76,6 @@ python3 evals/run_evals.py --output eval_after.json
 
 Snapshot là dữ liệu public được lưu ngày 09/11/2026. Không dùng nó để trả lời tình trạng hiện tại trong thực tế. Khi chạy live, API có thể rate limit, timeout hoặc thay đổi dữ liệu.
 
-## 3. Bản đồ project
-
-```text
-agent.py                    # Học viên tự viết agent loop
-providers.py                # Adapter bốn provider, đã cung cấp
-status_tools.py             # Tools + schema, đã cung cấp
-run.py                      # CLI
-fixtures/                   # Snapshot API, không sửa khi làm eval
-evals/cases.json            # 22 câu hỏi, kỳ vọng và một số kiểm tra tự động
-evals/scenarios.py          # Timeout và prompt injection giả lập cho eval
-evals/grading.py            # Rubric LLM judge và kiểm tra bằng code
-evals/run_evals.py          # Chạy agent, chấm điểm và lưu kết quả
-tests/                      # Tests offline
-```
-
-Một câu trả lời tốt phải phân biệt **trạng thái hiện tại theo thời điểm dữ liệu**, incident cũ, phạm vi ảnh hưởng và điều chưa biết. Status page không đủ để xác nhận nguyên nhân lỗi cụ thể của lớp.
-
 ## Tài liệu tham khảo: làm việc với coding agent
 
 Các tài liệu dưới đây giúp bạn tham khảo cách tổ chức việc viết code với AI; **không phải task của lab và không cần cài đặt để hoàn thành bài**.
