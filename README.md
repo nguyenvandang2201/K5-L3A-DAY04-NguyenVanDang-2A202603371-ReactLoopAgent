@@ -1,6 +1,6 @@
 # Lab: Xây dựng Status Investigation Agent
 
-Bạn sẽ tự viết một agent loop bằng Python. Agent dùng dữ liệu thật từ GitHub Status và Cloudflare Status để hỗ trợ điều tra sự cố, sau đó bạn dùng trace và eval để cải thiện agent với coding assistant.
+Bạn sẽ tự viết một agent loop bằng Python. Agent dùng dữ liệu thật từ GitHub Status và Cloudflare Status để hỗ trợ điều tra sự cố, sau đó bạn dùng trace và eval để kiểm tra cách agent hoạt động.
 
 **Mục tiêu:** gọi LLM → thực thi tool → đưa kết quả trở lại LLM → lặp đến khi trả lời hoặc hết giới hạn. Thời lượng dự kiến: **4 giờ**, gồm nghỉ 10 phút. Toàn bộ các bước trong [GUIDE.md](GUIDE.md) là nội dung của lab. Đọc thêm [RUBRIC.md](RUBRIC.md) để biết tiêu chí đánh giá.
 
@@ -8,9 +8,9 @@ Bạn sẽ tự viết một agent loop bằng Python. Agent dùng dữ liệu t
 
 1. Khám phá status tools và tự code agent loop.
 2. Thêm xử lý lỗi, giới hạn bước và trace.
-3. Chạy baseline với hai bộ eval: case cơ bản E1–E6 và case nâng cao A1–A8.
+3. Chạy hai bộ eval: case cơ bản E1–E6 và case nâng cao A1–A8.
 4. Phân tích partial failure, prompt injection, nguồn và giới hạn dữ liệu; implement bước kiểm tra nguồn trong agent.
-5. Thực hành loop engineering: đối chiếu baseline, sửa, chạy lại eval và ghi kết quả trước/sau.
+5. Chạy tests, đánh giá kết quả và trình bày trace của agent.
 
 Các bước trên là một lab thống nhất. Timeline, yêu cầu và tiêu chí hoàn thành được mô tả trong [GUIDE.md](GUIDE.md).
 
@@ -51,8 +51,8 @@ python3 run.py 'GitHub Actions hiện có sự cố không? Hãy kiểm tra inci
 python3 run.py --mode live 'Cloudflare có incident liên quan cache purge không?'
 python3 -m unittest discover -s tests -v
 python3 evals/run_evals.py --case E2 --output eval_results_e2.json
-python3 evals/run_evals.py --output eval_results_basic_before.json
-python3 evals/run_evals.py --suite advanced --output eval_results_advanced_before.json
+python3 evals/run_evals.py --output eval_results_basic.json
+python3 evals/run_evals.py --suite advanced --output eval_results_advanced.json
 ```
 
 - Mặc định là `snapshot`: đọc dữ liệu được lưu sẵn; vẫn cần LLM API key.
@@ -66,10 +66,9 @@ Snapshot là dữ liệu public được lưu ngày 09/11/2026. Không dùng nó
 ## 3. Bản đồ project
 
 ```text
-agent.py                    # Học viên tự viết và cải tiến agent loop
+agent.py                    # Học viên tự viết agent loop
 pseudocode_agent.py         # Gợi ý cho agent loop
 pseudocode_advanced.py      # Gợi ý kiểm tra nguồn
-pseudocode_improvement.py   # Gợi ý vòng loop engineering
 providers.py                # Adapter bốn provider, đã cung cấp
 status_tools.py             # Tools + schema, đã cung cấp
 run.py                      # CLI
@@ -79,7 +78,6 @@ evals/advanced_cases.json   # A1–A8: eval nâng cao
 evals/scenarios.py          # Timeout và prompt injection giả lập cho eval
 evals/run_evals.py          # Chạy eval, chất lượng câu trả lời chấm thủ công
 tests/                      # Tests offline
-IMPROVEMENT.md              # Mẫu báo cáo vòng cải tiến
 ```
 
 Một câu trả lời tốt phải phân biệt **trạng thái hiện tại theo thời điểm dữ liệu**, incident cũ, phạm vi ảnh hưởng và điều chưa biết. Status page không đủ để xác nhận nguyên nhân lỗi cụ thể của lớp.

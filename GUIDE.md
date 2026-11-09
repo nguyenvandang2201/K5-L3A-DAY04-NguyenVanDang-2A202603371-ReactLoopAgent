@@ -8,12 +8,11 @@ Toàn bộ các bước dưới đây thuộc bài lab. Giả định học viê
 |---|---|---|
 | 0–15 phút | Khám phá tools và dữ liệu | Hiểu hai tools và giới hạn dữ liệu. |
 | 15–65 phút | Bài 1: tự code agent loop | Model gọi tools và nhận lại kết quả. |
-| 65–90 phút | Bài 2: xử lý lỗi và trace | Có giới hạn bước, trace và lỗi được xử lý. |
-| 90–100 phút | Nghỉ | |
-| 100–125 phút | Bài 3: baseline eval | Chạy và phân tích E1–E6, A1–A8. |
-| 125–190 phút | Bài 4: thực hành nâng cao | Kiểm tra nguồn, partial failure, dữ liệu thiếu và prompt injection. |
-| 190–225 phút | Bài 5: loop engineering | So sánh trước/sau, tests, regression và chi phí. |
-| 225–240 phút | Demo và thảo luận | Trình bày kết quả, trade-off và giới hạn. |
+| 65–95 phút | Bài 2: xử lý lỗi và trace | Có giới hạn bước, trace và lỗi được xử lý. |
+| 95–105 phút | Nghỉ | |
+| 105–155 phút | Bài 3: chạy eval | Chạy và phân tích E1–E6, A1–A8. |
+| 155–220 phút | Bài 4: thực hành nâng cao | Kiểm tra nguồn, partial failure, dữ liệu thiếu và prompt injection. |
+| 220–240 phút | Kiểm tra, demo và thảo luận | Trình bày kết quả, trace và giới hạn. |
 
 Tổng: 240 phút, bao gồm 10 phút nghỉ. Hai bộ eval gọi model thật nên thời gian chạy có thể thay đổi; hãy bắt đầu từ đầu Bài 3 và làm các bước đọc trace trong lúc chờ.
 
@@ -63,13 +62,13 @@ run_agent(question, provider, tools, max_steps=6) -> dict
 
 Lỗi provider có thể kết thúc run; lỗi tool nên được trả làm observation. Test offline không chứng minh agent trả lời đúng ngoài thực tế.
 
-## Bài 3 — Chạy baseline eval
+## Bài 3 — Chạy eval
 
-Chạy hai bộ trước khi cải tiến agent. Mỗi case là một run độc lập trên snapshot cố định:
+Chạy hai bộ eval sau khi hoàn thành agent loop. Mỗi case là một run độc lập trên snapshot cố định:
 
 ```bash
-python3 evals/run_evals.py --output eval_results_basic_before.json
-python3 evals/run_evals.py --suite advanced --output eval_results_advanced_before.json
+python3 evals/run_evals.py --output eval_results_basic.json
+python3 evals/run_evals.py --suite advanced --output eval_results_advanced.json
 ```
 
 Bộ cơ bản gồm **E1–E6**; bộ nâng cao gồm **A1–A8**. File kết quả chứa câu hỏi, kỳ vọng, status, answer, trace và usage. `completed` chỉ nói loop kết thúc bình thường: bạn phải đối chiếu câu trả lời với evidence và tự chấm theo [RUBRIC.md](RUBRIC.md).
@@ -86,7 +85,7 @@ Bộ cơ bản gồm **E1–E6**; bộ nâng cao gồm **A1–A8**. File kết q
 | A7 | Không quy lỗi tại Việt Nam cho incident Phoenix khi chưa đủ bằng chứng. |
 | A8 | So sánh hai incident khác provider, dẫn cả hai nguồn, không bịa nguyên nhân chung. |
 
-`evals/scenarios.py` tạo timeout và chèn chỉ dẫn giả **chỉ khi chạy eval**; snapshot gốc không bị thay đổi. Chỉ dẫn trong tool result là dữ liệu không đáng tin, không phải yêu cầu cho agent. E6 cũng giả lập timeout. Ghi lại provider, model, cấu hình, số lần chạy, điểm, token và ví dụ failure trong `IMPROVEMENT.md`.
+`evals/scenarios.py` tạo timeout và chèn chỉ dẫn giả **chỉ khi chạy eval**; snapshot gốc không bị thay đổi. Chỉ dẫn trong tool result là dữ liệu không đáng tin, không phải yêu cầu cho agent. E6 cũng giả lập timeout. Ghi lại provider, model, cấu hình, số lần chạy, điểm, token và các trường hợp agent trả lời chưa đúng hoặc chưa đủ.
 
 ## Bài 4 — Thực hành nâng cao
 
@@ -106,30 +105,22 @@ Dùng kết quả A1, A4 và A8 để kiểm tra URL trong tool results và fina
 - Đọc trace A3: GitHub trả gì, Cloudflare lỗi gì, model có báo rõ phần chưa kiểm tra được không? Đếm số lần gọi lại. Đọc E6 để so sánh khi tool được hỏi đều timeout; không đồng nhất timeout với trạng thái dịch vụ.
 - Đọc trace A4: xác định chỉ dẫn giả trong tool result và kiểm tra final answer không làm theo nó. Đối chiếu nội dung và URL thật trong tool output. Một lần vượt qua không chứng minh agent an toàn trước mọi kiểu injection.
 
-Ghi một hạn chế hoặc failure quan sát được của mỗi case vào báo cáo; không hard-code câu trả lời theo case.
+Ghi một hạn chế hoặc lỗi quan sát được của mỗi case vào ghi chú; không hard-code câu trả lời theo case.
 
 ### 4.3. Search, context và dữ liệu chưa đầy đủ
 
 Phân tích A5 và A6: tool chỉ tìm trong 50 incident gần nhất; detail giữ hai update mới nhất cùng update đầu tiên. Một update có thể bị cắt (`truncated`) hoặc bị bỏ qua giữa timeline (`updates_total`). Ghi agent có làm rõ giới hạn dữ liệu không và việc đọc incident liên quan có bổ sung evidence gì. Với A2 và A7, đối chiếu phạm vi khách hàng, địa lý và uncertainty.
 
-## Bài 5 — Loop engineering: cải tiến và đo lại
+## Kiểm tra và nộp bài
 
-Dùng baseline ở Bài 3 và validation vừa implement để hoàn thành một vòng cải tiến. Nếu baseline chưa có failure thiếu nguồn, hãy nêu đó là giới hạn quan sát và kiểm tra cơ chế bằng các tests offline; không tự nhận cải thiện khi không có failure trước đó.
-
-1. Ghi case, trace, failure hoặc giới hạn; nêu giả thuyết và acceptance criteria.
-2. Dùng coding assistant hỗ trợ phân tích hoặc sửa một thay đổi nhỏ; tự xem diff. Không sửa `fixtures/`, `evals/cases.json`, `evals/advanced_cases.json`, `evals/scenarios.py` hay rubric để làm case pass.
-3. Chạy tests và hai suite sau khi sửa, dùng cùng provider, model và snapshot:
+Sau khi hoàn thành bước kiểm tra nguồn, chạy tests và eval để kiểm tra agent:
 
 ```bash
 python3 -m unittest discover -s tests -v
-python3 evals/run_evals.py --output eval_results_basic_after.json
-python3 evals/run_evals.py --suite advanced --output eval_results_advanced_after.json
+python3 evals/run_evals.py --output eval_results_basic.json
+python3 evals/run_evals.py --suite advanced --output eval_results_advanced.json
 ```
 
-4. Đọc lại answer và trace; so sánh đúng/sai, nguồn, độ đầy đủ, số model calls, tokens và chi phí nếu provider trả về. Ghi regression và quyết định `keep / revise / revert` vào `IMPROVEMENT.md`.
+Đọc câu trả lời và trace, tự chấm theo rubric. Các model có thể trả lời khác nhau giữa những lần chạy; một lần pass chưa chứng minh độ ổn định. Không sửa `fixtures/`, các bộ case, `evals/scenarios.py` hay rubric để làm case pass.
 
-Các model có thể trả lời khác nhau giữa những lần chạy. Một lượt trước/sau chỉ là bằng chứng ban đầu; không kết luận độ ổn định hoặc quy toàn bộ thay đổi token/chi phí cho một sửa đổi.
-
-## Nộp bài
-
-Nộp `agent.py`, kết quả hai bộ eval trước/sau đã xóa thông tin nhạy cảm và `IMPROVEMENT.md`. Demo agent, một trace nâng cao và vòng cải tiến; cho biết đang dùng snapshot hay live và thời điểm dữ liệu.
+Nộp `agent.py`, kết quả hai bộ eval đã xóa thông tin nhạy cảm và ghi chú về một trường hợp agent trả lời chưa đúng hoặc chưa đủ. Demo agent và một trace nâng cao; cho biết đang dùng snapshot hay live và thời điểm dữ liệu.
