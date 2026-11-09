@@ -14,7 +14,7 @@ Agent nhận câu hỏi cùng system prompt và lịch sử hội thoại. LLM �
 
 Sau khi xây agent, bạn chạy eval, phân tích kết quả, cải tiến rồi chạy lại cùng bộ eval để so sánh.
 
-<img src="assets/lab-workflow.svg" alt="Quy trình lab: xây agent, chạy eval lần một, phân tích lỗi, cải tiến, chạy eval lần hai" width="1200">
+<img src="assets/lab-workflow.svg" alt="Vòng lặp: xây agent, chạy eval, phân tích lỗi, cải tiến và quay lại chạy eval" width="1200">
 
 ## Lộ trình học
 
