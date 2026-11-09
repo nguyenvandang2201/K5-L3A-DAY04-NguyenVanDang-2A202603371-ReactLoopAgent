@@ -8,7 +8,7 @@ Bạn sẽ tự viết một agent loop bằng Python. Agent dùng dữ liệu t
 
 Agent nhận câu hỏi cùng system prompt và lịch sử hội thoại. LLM đề xuất tool call; Python thực thi tool, đưa kết quả về context rồi gọi LLM tiếp. Quá trình dừng khi có câu trả lời, gặp lỗi hoặc hết giới hạn bước.
 
-<img src="assets/agent-architecture.svg" alt="Sơ đồ agent: user, conversation context, LLM, Python agent loop, hai tools và nguồn dữ liệu status" width="1200">
+<img src="assets/agent-architecture.svg" alt="Sơ đồ agent: user, conversation context, LLM, Python agent loop và hai tools truy cập GitHub Status hoặc Cloudflare Status" width="1200">
 
 ## Một vòng thực hành
 
