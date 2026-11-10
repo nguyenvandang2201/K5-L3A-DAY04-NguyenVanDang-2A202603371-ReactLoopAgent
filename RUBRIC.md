@@ -18,3 +18,9 @@ LLM judge là một phép đánh giá xấp xỉ, có thể nhầm hoặc thiên
 | Cải tiến và trình bày | 20 | Có cải tiến phù hợp, validation nguồn, tests, so sánh kết quả và giải thích lỗi còn lại. |
 
 Điểm eval và điểm bài lab là **hai thang đo khác nhau**; không tự động dùng điểm eval thay cho điểm lab.
+
+## Bonus tùy chọn: tối đa 15 điểm
+
+Bộ bonus gồm 10 case, chấm riêng theo cùng thang 0–100 và quy đổi `điểm bonus = điểm bộ bonus × 0,15`. Chỉ quy đổi khi cả 10 case đã được chấm; nếu có case lỗi hoặc chỉ chạy một case thì chưa có điểm bonus tổng. Giảng viên đối chiếu trace, nhất là retry 429, lỗi định dạng, pagination và sources; điểm judge chỉ là tham khảo.
+
+Bài chính tối đa 100 điểm, bonus cộng thêm tối đa 15 điểm; tổng tối đa **115 điểm**. Bonus không thay thế các yêu cầu của bài chính.

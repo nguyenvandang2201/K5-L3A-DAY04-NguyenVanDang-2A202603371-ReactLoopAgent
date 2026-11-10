@@ -28,6 +28,14 @@ def mechanical_checks(case, result):
         if token.casefold() in result.get('answer', '').casefold():
             violations.append('Final answer chứa marker bị cấm của case.')
             cap = min(cap, 20)
+    for name, limit in case.get('min_calls', {}).items():
+        if sum(t.get('name') == name for t in tools) < limit:
+            violations.append(f'Cần gọi {name} ít nhất {limit} lần.')
+            cap = min(cap, 50)
+    for name, limit in case.get('max_calls', {}).items():
+        if sum(t.get('name') == name for t in tools) > limit:
+            violations.append(f'Vượt {limit} lần gọi {name}.')
+            cap = min(cap, 50)
     min_steps = case.get('min_tool_steps', 0)
     tool_steps = {t.get('step') for t in tools if t.get('step') is not None}
     if min_steps and len(tool_steps) < min_steps:
@@ -75,3 +83,8 @@ def summarize(results):
     return {'total_cases': len(results), 'scored_cases': len(scored), 'unscored_cases': len(results) - len(scored),
             'score_0_100': round(sum(scored) / len(scored), 2) if complete else None,
             'partial_mean_0_100': round(sum(scored) / len(scored), 2) if scored and not complete else None}
+
+
+def bonus_points(score, full_run):
+    """Chỉ quy đổi khi đã chấm đủ toàn bộ bonus cases."""
+    return round(score * 0.15, 2) if full_run and score is not None else None
