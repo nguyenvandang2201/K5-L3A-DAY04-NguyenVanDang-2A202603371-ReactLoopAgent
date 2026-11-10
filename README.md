@@ -30,7 +30,7 @@ Các bước trên là một lab thống nhất. Timeline, yêu cầu và tiêu 
 
 Sau bài chính, bạn có thể mở rộng agent để điều tra **GitHub, Cloudflare, Vercel, npm và DigitalOcean** qua 5 status tools và một tool đọc incident theo trang. Bộ bonus có 10 case riêng về dữ liệu dài, nhiều nhà cung cấp, pagination, lỗi định dạng, rate limit và prompt injection. Xem [GUIDE.md](GUIDE.md#thử-thách-bonus-tùy-chọn--15-điểm) để thực hiện.
 
-Điểm bài chính tối đa 100; bonus tối đa 15, tổng tối đa 115. Không cần làm bonus để hoàn thành bài chính.
+Điểm bài chính tối đa 85; bonus tối đa 15, tổng tối đa 100. Không cần làm bonus để hoàn thành bài chính.
 
 ## 1. Chuẩn bị
 

@@ -115,7 +115,7 @@ Nộp `agent.py`, `eval_before.json`, `eval_after.json` đã xóa thông tin nh�
 
 ## Thử thách bonus tùy chọn — 15 điểm
 
-Mở rộng agent sau khi hoàn thành bài chính. Bài bonus dùng **5 public status API khác nhau**: GitHub, Cloudflare, Vercel, npm và DigitalOcean. Môi trường cung cấp sẵn 5 status tools `get_github_status`, `get_cloudflare_status`, `get_vercel_status`, `get_npm_status`, `get_digitalocean_status`, cùng `get_incident_details` để đọc timeline theo trang. Các status API được đọc qua JSON; xem tài liệu của [GitHub](https://www.githubstatus.com/api), [Cloudflare](https://www.cloudflarestatus.com/api), [Vercel](https://www.vercel-status.com/api), [npm](https://status.npmjs.org/api) và [DigitalOcean](https://status.digitalocean.com/api).
+Bài chính tối đa 85 điểm; bài bonus tối đa 15 điểm, tổng tối đa 100 điểm. Mở rộng agent sau khi hoàn thành bài chính. Bài bonus dùng **5 public status API khác nhau**: GitHub, Cloudflare, Vercel, npm và DigitalOcean. Môi trường cung cấp sẵn 5 status tools `get_github_status`, `get_cloudflare_status`, `get_vercel_status`, `get_npm_status`, `get_digitalocean_status`, cùng `get_incident_details` để đọc timeline theo trang. Các status API được đọc qua JSON; xem tài liệu của [GitHub](https://www.githubstatus.com/api), [Cloudflare](https://www.cloudflarestatus.com/api), [Vercel](https://www.vercel-status.com/api), [npm](https://status.npmjs.org/api) và [DigitalOcean](https://status.digitalocean.com/api).
 
 ### Yêu cầu
 
