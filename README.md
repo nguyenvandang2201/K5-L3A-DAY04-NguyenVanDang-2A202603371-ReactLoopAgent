@@ -64,6 +64,7 @@ Chọn cấu hình khác nếu cần:
 | `removed-provider` | `removed-provider_API_KEY` | Tên model removed-model hỗ trợ tool use. |
 | `openrouter` | `OPENROUTER_API_KEY` | Model ID đầy đủ trên OpenRouter, thường có dạng `provider/model`. |
 | `opencode-go` | `OPENCODE_GO_API_KEY` | Ví dụ: `deepseek-v4.1-flash`; cần key và quyền truy cập OpenCode Go. |
+| `deepseek` | `DEEPSEEK_API_KEY` | Model DeepSeek API trực tiếp, ví dụ `deepseek-flash`. |
 
 Ví dụ chuyển sang Gemini: `export PROVIDER=gemini`, đặt `GEMINI_API_KEY` và `MODEL` phù hợp. Chọn một provider; không cần tất cả key. File `.env.example` chỉ là mẫu: chương trình **không tự đọc `.env`**. Có thể chạy `cp .env.example .env`, điền key rồi chạy `source .env` trong mỗi terminal mới. Trên Windows, dùng Git Bash để chạy đúng các lệnh này, hoặc thay `python3` bằng `python` và đặt biến bằng `$env:TEN_BIEN='gia_tri'` trong PowerShell. Không commit key hay trace chứa dữ liệu nhạy cảm.
 
