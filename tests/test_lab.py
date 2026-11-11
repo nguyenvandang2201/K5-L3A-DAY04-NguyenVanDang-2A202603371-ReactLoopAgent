@@ -79,20 +79,6 @@ class LoopTests(unittest.TestCase):
         self.assertEqual([m['tool_call_id'] for m in fake.histories[1][-2:]], ['a', 'b'])
 
 
-class ProviderTests(unittest.TestCase):
-    @patch.dict('os.environ', {'removed-provider_API_KEY': 'test'})
-    @patch('providers.post_json')
-    def test_removed-provider_groups_results(self, post):
-        post.return_value = {'content': [{'type': 'text', 'text': 'ok'}], 'stop_reason': 'end_turn', 'usage': {}}
-        client = Provider('removed-provider', 'test-model')
-        call = tool_call('a', 'get_status', '{"provider":"github"}')['message']
-        call['tool_calls'].append({'id': 'b', 'type': 'function', 'function': {'name': 'get_status', 'arguments': '{"provider":"cloudflare"}'}})
-        messages = [{'role': 'system', 'content': 'sys'}, {'role': 'user', 'content': 'hi'}, call,
-                    {'role': 'tool', 'tool_call_id': 'a', 'content': '{}'}, {'role': 'tool', 'tool_call_id': 'b', 'content': '{}'}]
-        result = client.complete(messages, [])
-        self.assertEqual(result['finish'], 'stop')
-        self.assertEqual(len(post.call_args.args[2]['messages'][-1]['content']), 2)
-
 class FullTrajectoryTests(unittest.TestCase):
     def test_two_tools_and_final_with_real_snapshot(self):
         class ScenarioProvider:

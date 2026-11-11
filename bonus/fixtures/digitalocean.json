@@ -8462,7 +8462,7 @@
         },
         {
           "id": "psk2b3pgbblq",
-          "name": "removed-provider Inference Model Availability",
+          "name": "Inference Model Availability",
           "status": "resolved",
           "created_at": "2026-06-27T04:43:29.854Z",
           "updated_at": "2026-06-27T05:15:38.440Z",
@@ -8476,7 +8476,7 @@
             {
               "id": "4yy9bh9yncmx",
               "status": "resolved",
-              "body": "Our Engineering team has resolved the issue that was causing HTTP 400 errors for requests to removed-provider models. Users should now be able to access removed-provider models without any issues.\nIf you continue to experience problems, please open a ticket with our Support team so we can investigate further.\nWe apologize for any inconvenience this may have caused.",
+              "body": "Our Engineering team has resolved the issue that was causing HTTP 400 errors for requests to the provider's models. Users should now be able to access the provider's models without any issues.\nIf you continue to experience problems, please open a ticket with our Support team so we can investigate further.\nWe apologize for any inconvenience this may have caused.",
               "incident_id": "psk2b3pgbblq",
               "created_at": "2026-06-27T05:15:38.421Z",
               "updated_at": "2026-06-27T05:15:38.421Z",
@@ -8496,7 +8496,7 @@
             {
               "id": "29fv29x8tnv2",
               "status": "monitoring",
-              "body": "Our Engineering team has mitigated an issue with removed-provider models. Previously, users may have encountered 400 errors when attempting to use any removed-provider model.\n\nAlthough the root cause of the issue is still being addressed by removed-provider, users should now be able to access and use removed-provider models again. We will continue to monitor the situation and provide updates if necessary. If you continue to experience problems, please open a ticket with our Support team. We apologize for any inconvenience this may have caused.",
+              "body": "Our Engineering team has mitigated an issue with the provider's models. Previously, users may have encountered 400 errors when attempting to use any affected model.\n\nAlthough the root cause of the issue is still being addressed by the upstream provider, users should now be able to access and use the provider's models again. We will continue to monitor the situation and provide updates if necessary. If you continue to experience problems, please open a ticket with our Support team. We apologize for any inconvenience this may have caused.",
               "incident_id": "psk2b3pgbblq",
               "created_at": "2026-06-27T04:43:29.902Z",
               "updated_at": "2026-06-27T04:43:29.902Z",
@@ -9456,7 +9456,7 @@
         },
         {
           "id": "lrrw084g3whn",
-          "name": "removed-provider reported outage that's impacting access to their Serverless Inference models",
+          "name": "The upstream provider reported an outage that's impacting access to their Serverless Inference models",
           "status": "resolved",
           "created_at": "2026-05-15T01:21:51.685Z",
           "updated_at": "2026-05-15T02:00:39.085Z",
@@ -9470,7 +9470,7 @@
             {
               "id": "7xnlckk3r455",
               "status": "resolved",
-              "body": "As of the current time, our Engineering team has confirmed that the issue with Serverless Inference has been resolved. The root cause of the issue was an outage with our provider, removed-provider, which affected users of removed-model 4.6 and removed-model 4.7 models. According to removed-provider's status page (https://status.removed-model.com/incidents/8z7l5zcy0v3b), they have resolved the outage. If you continue to experience problems, please open a ticket with our Support team. We apologize for any inconvenience this may have caused.",
+              "body": "As of the current time, our Engineering team has confirmed that the issue with Serverless Inference has been resolved. The root cause of the issue was an outage with our upstream provider, which affected users of affected inference models. According to the upstream provider's status page, they have resolved the outage. If you continue to experience problems, please open a ticket with our Support team. We apologize for any inconvenience this may have caused.",
               "incident_id": "lrrw084g3whn",
               "created_at": "2026-05-15T02:00:39.064Z",
               "updated_at": "2026-05-15T02:00:39.064Z",
@@ -9490,7 +9490,7 @@
             {
               "id": "m6m4q2x9llhs",
               "status": "identified",
-              "body": "According to removed-provider's status page (https://status.removed-model.com/incidents/8z7l5zcy0v3b), they have identified the root cause and are actively working on a fix. At this time, users may continue to experience errors when attempting to use removed-model 4.6 and removed-model 4.7 models. We will provide another update once removed-provider has implemented a fix and service is restored.",
+              "body": "According to the upstream provider's status page, they have identified the root cause and are actively working on a fix. At this time, users may continue to experience errors when attempting to use affected inference models. We will provide another update once the upstream provider has implemented a fix and service is restored.",
               "incident_id": "lrrw084g3whn",
               "created_at": "2026-05-15T01:23:56.061Z",
               "updated_at": "2026-05-15T01:23:56.061Z",
@@ -9510,7 +9510,7 @@
             {
               "id": "gdp4gqpxdyv8",
               "status": "monitoring",
-              "body": "As of the current time, our Engineering team is aware of an ongoing incident with our provider, removed-provider, that is impacting Serverless Inference. The outage is affecting all users attempting to use removed-model 4.6 and removed-model 4.7 models. According to removed-provider's status page (https://status.removed-model.com/incidents/8z7l5zcy0v3b), they are currently experiencing an outage that is causing this disruption. We apologize for the inconvenience and will provide updates as more information becomes available.",
+              "body": "As of the current time, our Engineering team is aware of an ongoing incident with our upstream provider, that is impacting Serverless Inference. The outage is affecting all users attempting to use affected inference models. According to the upstream provider's status page, they are currently experiencing an outage that is causing this disruption. We apologize for the inconvenience and will provide updates as more information becomes available.",
               "incident_id": "lrrw084g3whn",
               "created_at": "2026-05-15T01:21:51.771Z",
               "updated_at": "2026-05-15T01:21:51.771Z",

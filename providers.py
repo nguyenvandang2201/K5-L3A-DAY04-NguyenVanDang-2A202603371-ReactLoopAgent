@@ -11,7 +11,6 @@ CONFIG = {
     'openrouter': ('OPENROUTER_API_KEY', 'https://openrouter.ai/api/v1/chat/completions'),
     'opencode-go': ('OPENCODE_GO_API_KEY', 'https://opencode.ai/inference/go/openai/v1/chat/completions'),
     'deepseek': ('DEEPSEEK_API_KEY', 'https://api.deepseek.com/chat/completions'),
-    'removed-provider': ('removed-provider_API_KEY', 'https://api.removed-provider.com/v1/messages'),
 }
 
 
@@ -47,8 +46,6 @@ class Provider:
             raise ValueError(f'Thiếu {key_name}; xem README.md.')
 
     def complete(self, messages, schemas):
-        if self.name == 'removed-provider':
-            return self._removed-provider(messages, schemas)
         payload = {'model': self.model, 'messages': messages}
         if schemas:
             payload['tools'] = schemas
@@ -60,38 +57,3 @@ class Provider:
         message = choice['message']
         calls = [{'id': c['id'], 'name': c['function']['name'], 'arguments': c['function']['arguments']} for c in message.get('tool_calls', [])]
         return {'message': message, 'calls': calls, 'finish': choice.get('finish_reason'), 'usage': data.get('usage', {})}
-
-    def _removed-provider(self, messages, schemas):
-        system = '\n'.join(m['content'] for m in messages if m['role'] == 'system')
-        native = []
-        for m in messages:
-            if m['role'] == 'system':
-                continue
-            if m['role'] == 'assistant':
-                blocks = []
-                if m.get('content'):
-                    blocks.append({'type': 'text', 'text': m['content']})
-                for call in m.get('tool_calls', []):
-                    blocks.append({'type': 'tool_use', 'id': call['id'], 'name': call['function']['name'], 'input': json.loads(call['function']['arguments'])})
-                native.append({'role': 'assistant', 'content': blocks})
-            elif m['role'] == 'tool':
-                block = {'type': 'tool_result', 'tool_use_id': m['tool_call_id'], 'content': m['content']}
-                if native and native[-1]['role'] == 'user' and isinstance(native[-1]['content'], list):
-                    native[-1]['content'].append(block)
-                else:
-                    native.append({'role': 'user', 'content': [block]})
-            else:
-                native.append({'role': 'user', 'content': m['content']})
-        tools = [{'name': x['function']['name'], 'description': x['function']['description'], 'input_schema': x['function']['parameters']} for x in schemas]
-        payload = {'model': self.model, 'max_tokens': 1024, 'system': system, 'messages': native}
-        if tools:
-            payload['tools'] = tools
-        data = post_json(self.url, {'x-api-key': self.key, 'removed-provider-version': '2023-06-01'}, payload)
-        blocks = data['content']
-        calls = [{'id': b['id'], 'name': b['name'], 'arguments': json.dumps(b['input'], ensure_ascii=False)} for b in blocks if b['type'] == 'tool_use']
-        text = '\n'.join(b['text'] for b in blocks if b['type'] == 'text')
-        message = {'role': 'assistant', 'content': text or None}
-        if calls:
-            message['tool_calls'] = [{'id': c['id'], 'type': 'function', 'function': {'name': c['name'], 'arguments': c['arguments']}} for c in calls]
-        reason = {'end_turn': 'stop', 'tool_use': 'tool_calls', 'max_tokens': 'length'}.get(data.get('stop_reason'), data.get('stop_reason'))
-        return {'message': message, 'calls': calls, 'finish': reason, 'usage': data.get('usage', {})}

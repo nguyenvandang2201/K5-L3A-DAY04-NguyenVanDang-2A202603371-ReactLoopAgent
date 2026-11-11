@@ -61,7 +61,6 @@ Chọn cấu hình khác nếu cần:
 |---|---|---|
 | `openai` | `OPENAI_API_KEY` | Tên model OpenAI bạn được cấp quyền dùng. |
 | `gemini` | `GEMINI_API_KEY` | Tên model Gemini hỗ trợ function calling. |
-| `removed-provider` | `removed-provider_API_KEY` | Tên model removed-model hỗ trợ tool use. |
 | `openrouter` | `OPENROUTER_API_KEY` | Model ID đầy đủ trên OpenRouter, thường có dạng `provider/model`. |
 | `opencode-go` | `OPENCODE_GO_API_KEY` | Ví dụ: `deepseek-v4.1-flash`; cần key và quyền truy cập OpenCode Go. |
 | `deepseek` | `DEEPSEEK_API_KEY` | Model DeepSeek API trực tiếp, ví dụ `deepseek-flash`. |
@@ -78,7 +77,7 @@ export OPENCODE_GO_API_KEY='<key-OpenCode-Go>'
 
 Adapter gửi User-Agent riêng và giữ cùng session ID cho các lượt trong một run theo [hướng dẫn OpenCode Go](https://opencode.ai/docs/console/go/#where-can-i-use-it). Key phải còn hiệu lực và workspace cần có quyền dùng model. Nếu dùng judge provider khác, xem `--judge-provider` và `--judge-model` trong GUIDE.
 
-Adapter dùng Chat Completions cho OpenAI, Gemini compatibility, OpenRouter và OpenCode Go; removed-provider dùng Messages API. Nó phục vụ **tool calling cơ bản**, không bao phủ mọi tính năng đặc thù model như extended thinking. Khi provider từ chối model hoặc hết quota, kiểm tra quyền truy cập, model ID và key. Xem tài liệu: [OpenAI](https://developers.openai.com/api/docs/guides/function-calling), [Gemini](https://ai.google.dev/gemini-api/docs/openai), [removed-provider](https://platform.removed-model.com/docs/en/agents-and-tools/tool-use/how-tool-use-works), [OpenRouter](https://openrouter.ai/docs/guides/features/tool-calling), [OpenCode Go](https://opencode.ai/docs/console/go/).
+Adapter dùng Chat Completions cho OpenAI, Gemini compatibility, OpenRouter, OpenCode Go và DeepSeek. Nó phục vụ **tool calling cơ bản**, không bao phủ mọi tính năng đặc thù model như extended thinking. Khi provider từ chối model hoặc hết quota, kiểm tra quyền truy cập, model ID và key. Xem tài liệu: [OpenAI](https://developers.openai.com/api/docs/guides/function-calling), [Gemini](https://ai.google.dev/gemini-api/docs/openai), [OpenRouter](https://openrouter.ai/docs/guides/features/tool-calling), [OpenCode Go](https://opencode.ai/docs/console/go/).
 
 ## 2. Chạy thử
 
@@ -110,11 +109,11 @@ Trong bài lab, *agent loop* là vòng LLM → tool → kết quả. Khi dùng c
 
 | Chủ đề | Tài liệu | Bạn sẽ tìm thấy gì? |
 |---|---|---|
-| Instructions | [Codex: AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md) · [removed-model Code: project instructions](https://code.removed-model.com/docs/en/memory) | Cách cung cấp quy ước dự án và lệnh kiểm tra cho coding agent. |
-| Skills | [OpenAI: Build skills](https://learn.chatgpt.com/docs/build-skills) · [removed-model Code: Skills](https://code.removed-model.com/docs/en/skills) | Cách đóng gói một workflow có thể dùng lại, ví dụ review code hoặc debug. |
-| Hooks | [Codex: Hooks](https://learn.chatgpt.com/docs/hooks) · [removed-model Code: Hooks](https://code.removed-model.com/docs/en/hooks) | Cách chạy kiểm tra tại các sự kiện như trước/sau tool call hoặc khi agent kết thúc. |
+| Instructions | [Codex: AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md) | Cách cung cấp quy ước dự án và lệnh kiểm tra cho coding agent. |
+| Skills | [OpenAI: Build skills](https://learn.chatgpt.com/docs/build-skills) | Cách đóng gói một workflow có thể dùng lại, ví dụ review code hoặc debug. |
+| Hooks | [Codex: Hooks](https://learn.chatgpt.com/docs/hooks) | Cách chạy kiểm tra tại các sự kiện như trước/sau tool call hoặc khi agent kết thúc. |
 | Workflow | [GitHub Spec Kit](https://github.github.com/spec-kit/quickstart) · [Superpowers](https://github.com/obra/superpowers) | Hai ví dụ workflow: đi từ yêu cầu đến kế hoạch, implementation và kiểm chứng. Superpowers là dự án cộng đồng. |
-| Vòng lặp tự động | [Ralph: bài viết gốc](https://ghuntley.com/ralph/) · [removed-model Code Ralph Loop plugin](https://github.com/removed-providers/removed-model-plugins-official/blob/main/plugins/ralph-loop/README.md) | Ví dụ cho agent tiếp tục lặp trên một nhiệm vụ; plugin dùng Stop hook và là một implementation riêng của ý tưởng này. |
+| Vòng lặp tự động | [Ralph: bài viết gốc](https://ghuntley.com/ralph/) | Ví dụ cho agent tiếp tục lặp trên một nhiệm vụ. |
 | Thiết kế môi trường | [OpenAI: Harness engineering](https://openai.com/index/harness-engineering/) | Vai trò của tests, feedback và môi trường khi giao công việc cho coding agent. |
 
 Nếu thử workflow tự động, hãy đặt giới hạn lượt chạy hoặc chi phí, có điều kiện dừng và tự kiểm tra kết quả. Tests pass là bằng chứng hữu ích, nhưng vẫn cần xem code và đối chiếu yêu cầu. Đọc kỹ quyền và hướng dẫn của từng công cụ trước khi cài hoặc chạy plugin/hook.

@@ -9172,7 +9172,7 @@
             {
               "id": "dkg6ntmqrx13",
               "status": "resolved",
-              "body": "On September 16, 2026, between 04:40 and 11:45 UTC, the Gemini 3.8 Flash model in GitHub Copilot experienced degraded availability. Requests to this model failed at an average rate of 6.4%, and the impact was highest during peak traffic hours. Other Copilot models were not affected. Users could continue to work with a different model or with 'Auto'.<br /><br />The degradation was caused due to a capacity issue with an upstream model provider. Failure rates returned to normal as the daily traffic peak passed. We monitored the model until it was healthy and resolved the incident at 17:48 UTC. We are working to make our systems resilient to cover peak demand for all the Copilot models.",
+              "body": "On September 16, 2026, between 04:40 and 11:45 UTC, the Gemini 3.8 Flash model in GitHub Copilot experienced degraded availability. Requests to this model failed at an average rate of 6.4%, and the impact was highest during peak traffic hours. Other Copilot models were not affected. Users could continue to work with a different model or with 'Auto'.<br /><br />The degradation was caused due to a capacity issue with an upstream model provider. Failure rates returned to normal as the daily traffic peak passed. We monitored the model until it was healthy and resolved the incident at 17:48 UTC. We are working to make our systems resilient to cover peak demand for all the affected models.",
               "incident_id": "nlxnbqnkdzdl",
               "created_at": "2026-09-16T17:48:49.246Z",
               "updated_at": "2026-09-22T09:37:08.381Z",
@@ -9361,7 +9361,7 @@
             {
               "id": "wm1f9wzx17x7",
               "status": "resolved",
-              "body": "On September 15, 2026, between 05:45 and 09:50 UTC, the removed-model Fable 5.1 model in GitHub Copilot experienced intermittently degraded availability, with an average error rate of 2.8%. During brief recurring 15 minute periods that recurred every ~45 minutes, availability for removed-model Fable 5.1 dropped to a maximum of ~40% before recovering completely. Other Copilot models were not affected. Users could continue to work with a different model or with 'Auto'.<br /><br />The cause was an issue with an upstream model provider that intermittently rejected requests while overloaded. GitHub worked with the provider, who acknowledged and then resolved the underlying issue at 9:50 UTC, after which the model returned to constant normal availability. Once recovery was guaranteed, we resolved the incident at 11:17 UTC.<br /><br />To reduce the chance of recurrence and customer impact, GitHub is reviewing per-model availability alerting and automatic in-product fallback so that requests to a degraded model can shift to a healthy alternative more quickly.",
+              "body": "On September 15, 2026, between 05:45 and 09:50 UTC, the affected model in GitHub Copilot experienced intermittently degraded availability, with an average error rate of 2.8%. During brief recurring 15 minute periods that recurred every ~45 minutes, availability for the affected model dropped to a maximum of ~40% before recovering completely. Other Copilot models were not affected. Users could continue to work with a different model or with 'Auto'.<br /><br />The cause was an issue with an upstream model provider that intermittently rejected requests while overloaded. GitHub worked with the provider, who acknowledged and then resolved the underlying issue at 9:50 UTC, after which the model returned to constant normal availability. Once recovery was guaranteed, we resolved the incident at 11:17 UTC.<br /><br />To reduce the chance of recurrence and customer impact, GitHub is reviewing per-model availability alerting and automatic in-product fallback so that requests to a degraded model can shift to a healthy alternative more quickly.",
               "incident_id": "qwdwmtqghpk5",
               "created_at": "2026-09-15T11:17:22.038Z",
               "updated_at": "2026-09-22T12:41:35.195Z",
@@ -9381,7 +9381,7 @@
             {
               "id": "kdql5h7y369f",
               "status": "investigating",
-              "body": "The issues with our upstream model provider have been resolved, and removed-model Fable 5.1 is once again available in Copilot products and IDE surfaces.<br /><br />We will continue monitoring to ensure stability, but mitigation is complete.",
+              "body": "The issues with our upstream model provider have been resolved, and the affected model is once again available in Copilot products and IDE surfaces.<br /><br />We will continue monitoring to ensure stability, but mitigation is complete.",
               "incident_id": "qwdwmtqghpk5",
               "created_at": "2026-09-15T11:17:13.405Z",
               "updated_at": "2026-09-15T11:17:13.405Z",
@@ -9401,7 +9401,7 @@
             {
               "id": "7k6lw43gz2m3",
               "status": "investigating",
-              "body": "We continue to monitor intermittent errors affecting removed-model Fable 5.1 in some Copilot products and integrated development environments. Customer-facing metrics have recovered, and we are awaiting confirmation from our upstream provider that the issue will not recur. Customers can select another model or Auto in the meantime.",
+              "body": "We continue to monitor intermittent errors affecting the affected model in some Copilot products and integrated development environments. Customer-facing metrics have recovered, and we are awaiting confirmation from our upstream provider that the issue will not recur. Customers can select another model or Auto in the meantime.",
               "incident_id": "qwdwmtqghpk5",
               "created_at": "2026-09-15T11:09:33.869Z",
               "updated_at": "2026-09-15T11:09:33.869Z",
@@ -9421,7 +9421,7 @@
             {
               "id": "99hh4ppv091w",
               "status": "investigating",
-              "body": "We continue to investigate intermittent errors affecting removed-model Fable 5.1 in some Copilot products and integrated development environments. Customers can use another model or select Auto while we monitor the situation.",
+              "body": "We continue to investigate intermittent errors affecting the affected model in some Copilot products and integrated development environments. Customers can use another model or select Auto while we monitor the situation.",
               "incident_id": "qwdwmtqghpk5",
               "created_at": "2026-09-15T10:32:25.736Z",
               "updated_at": "2026-09-15T10:32:25.736Z",
@@ -9461,7 +9461,7 @@
             {
               "id": "c65zjqf1bs09",
               "status": "monitoring",
-              "body": "We are investigating degraded availability for removed-model Fable 5.1, affecting some Copilot products and integrated development environments. The issue is caused by a problem with our upstream model provider. Customers can use another model or select Auto while we investigate.",
+              "body": "We are investigating degraded availability for the affected model, affecting some Copilot products and integrated development environments. The issue is caused by a problem with our upstream model provider. Customers can use another model or select Auto while we investigate.",
               "incident_id": "qwdwmtqghpk5",
               "created_at": "2026-09-15T09:48:04.095Z",
               "updated_at": "2026-09-15T09:48:04.095Z",
